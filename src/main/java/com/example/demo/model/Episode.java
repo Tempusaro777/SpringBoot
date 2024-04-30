@@ -21,9 +21,6 @@ public class Episode {
     @JoinColumn(name = "series_id", nullable = false)
     private Series series;
 
-    @Column(name = "series_id", nullable = false)
-    private Long seriesId;
-
     @Column(name = "number_episodes", nullable = false)
     private int numberEpisodes;
 

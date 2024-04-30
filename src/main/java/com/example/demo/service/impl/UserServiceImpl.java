@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.*;
 
@@ -12,7 +11,7 @@ import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -20,49 +19,28 @@ public class UserServiceImpl implements UserService{
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
     @Override
     public User registerUser(User user) {
+        // 对密码进行加密
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        // 存储用户信息到数据库中
         return userRepository.save(user);
     }
-    @Override
-    public Optional<User> login(String username, String password) {
-        return userRepository.findByUsername(username).filter(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
-    }
-    @Override
-    public User updateUserInformation(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
-    }
+
     @Override
     public void deleteUser(Long userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        userRepository.deleteById(userId);
     }
-    @Override
-    public Optional<User> resetPassword(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resetPassword'");
-    }
-    @Override
-    public void verifyEmail(String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'verifyEmail'");
-    }
-    @Override
-    public void changeRole(Long userId, String role) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeRole'");
-    }
+
     @Override
     public List<User> getAllUsers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
+        return userRepository.findAll();
     }
+
     @Override
-    public List<User> searchUsers(String searchTerm) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchUsers'");
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
-    
+
 }
