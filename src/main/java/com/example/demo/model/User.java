@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
-@Entity
+@Entity(name = "User")
 @Table(name = "users")
 public class User {
     @Id
@@ -30,7 +30,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     private LocalDate registerDate;
@@ -40,7 +40,7 @@ public class User {
     private Set<Movie> movies = new HashSet<>();
 
     public User() {
-        
+
     }
 
     public User(String username, String userpassword, String email, LocalDate registerDate) {
@@ -60,7 +60,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", userpassword=" + password + ", email=" + email
+        return "User [id=" + id + ", username=" + username + ", email=" + email
                 + ", registerDate=" + registerDate + "]";
     }
 

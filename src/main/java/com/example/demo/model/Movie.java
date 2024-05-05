@@ -13,7 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-@Entity
+@Entity(name = "Movie")
 @Table(name = "movies")
 public class Movie {
     @Id
@@ -27,7 +27,7 @@ public class Movie {
     private LocalDate releaseDate;
     @Column(name = "duration", nullable = false)
     private Duration duration;
-    @Column(name = "Type", nullable = false)
+    @Column(name = "type", nullable = false)
     private String type;
 
     @ManyToMany(mappedBy = "movies")

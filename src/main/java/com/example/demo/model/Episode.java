@@ -10,7 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-@Entity
+
+@Entity(name = "Episode")
 @Table(name = "episodes")
 public class Episode {
     @Id
@@ -21,8 +22,8 @@ public class Episode {
     @JoinColumn(name = "series_id", nullable = false)
     private Series series;
 
-    @Column(name = "number_episodes", nullable = false)
-    private int numberEpisodes;
+    @Column(name = "episode_number", nullable = false)
+    private int episodeNumber;
 
     @Column(name = "title", nullable = false)
     private String title;
