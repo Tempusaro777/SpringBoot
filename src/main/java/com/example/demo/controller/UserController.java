@@ -7,10 +7,12 @@ import com.example.demo.model.Result;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.Common;
+import com.example.demo.utils.Jwt;
 
 import org.springframework.util.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Validated // 启用Spring方法级别的验证支持
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
@@ -33,7 +37,7 @@ public class UserController {
         if (u == null) {
             // 该用户不存在时，则注册
             // 如果用户输入的用户名和密码为空,则不注册
-            if (!StringUtils.hasText(user.getUsername()) || !StringUtils.hasText(user.getUsername())) {
+            if (!StringUtils.hasText(user.getUsername()) || !StringUtils.hasText(user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(Result.error("Invalid username or password!"));
             }
@@ -48,4 +52,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Result<String>> login(@RequestBody User loginUser) {
+        User user = userService.findByUsername(loginUser.getUsername());
+        if (user != null && passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
+            String token = Jwt.generateToken(user.getUsername());
+            return ResponseEntity.ok(Result.success(token));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.error("Invalid username or password!"));
+        }
+    }
+
+    
 }
