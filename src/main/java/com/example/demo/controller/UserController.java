@@ -10,6 +10,10 @@ import com.example.demo.utils.Common;
 import com.example.demo.utils.Jwt;
 
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,13 +60,16 @@ public class UserController {
     public ResponseEntity<Result<String>> login(@RequestBody User loginUser) {
         User user = userService.findByUsername(loginUser.getUsername());
         if (user != null && passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
-            String token = Jwt.generateToken(user.getUsername());
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", loginUser.getId());
+            claims.put("username", loginUser.getUsername());
+            String token = Jwt.generateToken(claims);
             return ResponseEntity.ok(Result.success(token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.error("Invalid username or password!"));
         }
     }
 
-    
+
     
 }
