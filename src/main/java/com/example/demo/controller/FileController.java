@@ -28,13 +28,20 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            s3StorageService.uploadFile(file);
-            return ResponseEntity.ok("File uoloaded successfully: " + file.getOriginalFilename());
-        } catch (IOException exception) {
-            return ResponseEntity.internalServerError().body("Failed to upload file: " + exception.getMessage());
+    public ResponseEntity<String> uploadFile(@RequestParam("files") MultipartFile[] files) {
+        StringBuilder result = new StringBuilder();
+        for (MultipartFile file : files) {
+            try {
+                s3StorageService.uploadFile(file);
+                result.append("File uploaded successfully: ").append(file.getOriginalFilename()).append("\n");
+                // return ResponseEntity.ok("File uploaded successfully: " +
+                // file.getOriginalFilename());
+            } catch (IOException exception) {
+                return ResponseEntity.internalServerError().body(
+                        "Failed to upload file: " + file.getOriginalFilename() + "Error: " + exception.getMessage());
+            }
         }
+        return ResponseEntity.ok(result.toString());
     }
 
     @GetMapping("/download/{fileName}")

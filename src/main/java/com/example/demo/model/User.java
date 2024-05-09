@@ -35,6 +35,10 @@ public class User {
 
     private LocalDate registerDate;
 
+    //头像URL
+    @Column(name = "avatar_url") 
+    private String avatarUrl;
+
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "user_movies", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> movies = new HashSet<>();
@@ -60,8 +64,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", email=" + email
-                + ", registerDate=" + registerDate + "]";
+        return "User [id=" + id + ", username=" + username + ", email=" + email + ", registerDate=" + registerDate
+                + ", avatarUrl=" + avatarUrl + ", movies=" + movies + "]";
     }
 
     public Long getId() {
@@ -102,6 +106,14 @@ public class User {
 
     public void setRegisterDate(LocalDate registerDate) {
         this.registerDate = registerDate;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
 }

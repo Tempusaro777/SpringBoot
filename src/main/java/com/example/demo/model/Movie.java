@@ -19,14 +19,19 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @Column(name = "title", nullable = false)
     private String title;
+
     @Column(name = "description", nullable = false)
     private String description;
+
     @Column(name = "release_date", nullable = false)
     private LocalDate releaseDate;
+
     @Column(name = "duration", nullable = false)
     private Duration duration;
+    
     @Column(name = "type", nullable = false)
     private String type;
 

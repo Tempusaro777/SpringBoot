@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.*;
 
@@ -41,6 +42,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<User> findById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 
 }

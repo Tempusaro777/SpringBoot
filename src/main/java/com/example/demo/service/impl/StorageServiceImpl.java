@@ -26,10 +26,14 @@ public class StorageServiceImpl implements StorageService {
     private String bucketName = "my-mio";
 
     @Override
-    public void uploadFile(MultipartFile multipartFile) throws IOException {
+    public String uploadFile(MultipartFile multipartFile) throws IOException {
         File file = convertMultiPartFile(multipartFile);
+        String fileName = multipartFile.getOriginalFilename();
         s3client.putObject(new PutObjectRequest(bucketName, multipartFile.getOriginalFilename(), file));
         Files.delete(file.toPath());
+
+        //获取文件的URL
+        return s3client.getUrl(bucketName, fileName).toString();
     }
 
     @Override

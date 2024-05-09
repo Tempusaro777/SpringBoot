@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Service
 public interface StorageService {
-    void uploadFile(MultipartFile multipartFile) throws IOException;
+    String uploadFile(MultipartFile multipartFile) throws IOException;
 
     S3Object downloadFile(String fileName);
 
