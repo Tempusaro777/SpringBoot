@@ -9,6 +9,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class Jwt {
+    //工具类无需创建对象来访问静态方法（Static method）
+    //所以将constructor变为私有，使得在外部无法构建一个Jwt实例
+    private Jwt() {}
+
     private static final String SECRET_KEY = "Mio";
 
     public static String generateToken(Map<String, Object> claims) {

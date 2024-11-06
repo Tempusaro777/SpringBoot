@@ -8,7 +8,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import java.io.IOException;
 
 @Service
-public interface StorageService {
+public interface S3Service {
     String uploadFile(MultipartFile multipartFile) throws IOException;
 
     S3Object downloadFile(String fileName);

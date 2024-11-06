@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.model.Result;
 import com.example.demo.model.User;
-import com.example.demo.service.StorageService;
+import com.example.demo.service.S3Service;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.Common;
 import com.example.demo.utils.Jwt;
@@ -15,16 +13,13 @@ import com.example.demo.utils.Jwt;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -33,9 +28,9 @@ public class UserController {
 
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final StorageService s3Service;
+    private final S3Service s3Service;
 
-    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder, StorageService s3Service) {
+    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder, S3Service s3Service) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.s3Service = s3Service;
@@ -56,10 +51,12 @@ public class UserController {
             if (!Common.isValidEmail(user.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error("Invalid email format!"));
             }
+            user.setRegisterDate(LocalDate.now());
+            user.setAvatarUrl("https://my-mio.s3.us-east-1.amazonaws.com/Cat.JPG");
             User registeredUser = userService.registerUser(user);
             return ResponseEntity.ok(Result.success(registeredUser));
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error("Thie username has been taken!"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error("This username has been taken!"));
         }
     }
 
@@ -75,6 +72,12 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.error("Invalid username or password!"));
         }
+    }
+
+    @GetMapping("/showUsers")
+    public ResponseEntity<Result<List<User>>> getUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(Result.success(users));
     }
 
     @PostMapping("/uploadAvatar")
